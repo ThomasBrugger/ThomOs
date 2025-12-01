@@ -6,7 +6,7 @@
 typedef struct Stack
 {
     Stack_Config* pConfig;
-    Generic_Handle buffer;
+    uint8_t* buffer;
     size_t topElementIndex;
 } Stack;
 
@@ -26,7 +26,7 @@ Stack_Handle Stack_create(Stack_Config* pConfig)
         else
         {
             size_t bufferSize = pConfig->elementCount * pConfig->dataSize;
-            handle->buffer = (Generic_Handle)malloc(bufferSize);
+            handle->buffer = (uint8_t*)malloc(bufferSize);
         }
 
         handle->topElementIndex = 0;
@@ -40,13 +40,21 @@ Stack_Handle Stack_create(Stack_Config* pConfig)
     return handle;
 }
 
+Result_t Stack_destroy(Stack_Handle handle)
+{
+    free(handle->buffer);
+    free(handle);
+
+    return RESULT_SUCCESS;
+}
+
 Result_t Stack_push(Stack_Handle handle, Generic_Handle data, size_t size)
 {
     assert(NULL != handle && NULL != data);
     assert(size == handle->pConfig->dataSize);
 
-    void* dest = &(handle->buffer[handle->topElementIndex]);
-    memcpy(dest, (void*)data, size);
+    uint8_t* dest = &(handle->buffer[handle->topElementIndex]);
+    memcpy(dest, data, size);
     handle->topElementIndex++;
 
     return RESULT_SUCCESS;
@@ -57,8 +65,8 @@ Result_t Stack_pop(Stack_Handle handle, Generic_Handle data, size_t size)
     assert(NULL != handle && NULL != data);
     assert(size == handle->pConfig->dataSize);
 
-    void* src = &(handle->buffer[handle->topElementIndex]);
-    memcpy((void*)data, src, size);
+    uint8_t* src = &(handle->buffer[handle->topElementIndex]);
+    memcpy(data, src, size);
     handle->topElementIndex++;
 
     return RESULT_SUCCESS;

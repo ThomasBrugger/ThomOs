@@ -19,6 +19,11 @@ typedef struct Stack_Config
 Stack_Handle Stack_create(Stack_Config* pConfig);
 
 /*
+    Destroys the stack handle.
+*/
+Result_t Stack_destroy(Stack_Handle handle);
+
+/*
     Pushs input data to stack.
 */
 Result_t Stack_push(Stack_Handle handle, Generic_Handle data, size_t size);
@@ -32,3 +37,4 @@ Result_t Stack_pop(Stack_Handle handle, Generic_Handle data, size_t size);
     Sets the stack to init state
 */
 Result_t Stack_reset();
+
